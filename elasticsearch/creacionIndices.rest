@@ -1,0 +1,159 @@
+#Recupera todo lo que existe en ElasticSeach
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# METODOS HTTP CONOCEIS
+#  GET       Devolver contenido
+#  POST      Modificar contenido que exista
+#  PUT       Crear contenidos
+#  DELETE    Borrar contenidos
+#  HEAD      Nos indica si el contenido existe
+
+# Al trabajar con ElasticSearch:
+#   Tablas ---> Indices
+
+# Crear un contenido en ElasticSearch
+# Equivalente a un INSERT de SQL
+PUT mi_indice_1/_doc/1
+{
+  "titulo": "Ejemplo de documento 1",
+  "paginas": 5,
+  "borrador": true  
+}
+
+# Verificar si el indice existe
+HEAD mi_indice_1
+
+
+# Obtener/Recuperar la información del índice
+GET mi_indice_1
+
+# aliases. En nuestro caso ninguno <---
+# mappings: Definen los campos que se indexan y cómo se indexan
+#   borrador:  valor lógico: true o false
+#   paginas:   numero
+#   titulo:    keyword
+# En nuestro caso tenemos un mapping AUTOGENERADO <- PELIGROSISIMO!!!!!!! No lo queremos
+#      1- No va a acertar con los tipos de campos en muchos casos
+#      2- El mapping es dinámico y sujeto a cambios peligrosisimos
+# settings:
+#   Caracteristicas del indice: 
+#     Numero de shards o fragmentos <- LUCENE
+#       El índice en su conjunto se va a repartir entre varias máquinas. Cada máquina va a agurdar unos documentos determinados. Por ejemplo:
+#         Maquina 1, que guarde los documentos que empiezan por la letra A
+#         Maquina 2, que guarde los documentos que empiezan por otras letras
+#     Numero de replicas: cada replica se puede guardar en varios sitios, tener varias copias: HA + Escalabilidad
+#
+PUT mi_indice_1/_doc/3
+{
+  "titulo": "Ejemplo de documento 2",
+  "paginas": "catorce",
+  "borrador": true  
+}
+
+# Recuperación de un documento
+GET mi_indice_1/_doc/1
+
+# Busqueda en el indice
+GET mi_indice_1/_search
+
+# Poder crear un indice estableciendo nuestro mapping concreto
+PUT mi_indice_2
+{
+  "mappings": {
+    "properties": {
+      "titulo": { "type": "text" },
+      "paginas": { "type": "long" },
+      "borrador": { "type": "boolean" }
+    }
+  }
+}
+# Tipos de datos:
+#  Fecha
+#  Decimales: double
+#  Hora
+#  Fecha+Hora
+#  Geopoint: Geolocalización
+#  IP <- Busquedas por rangos de red: 127.234.0.5 - 127.134.0.123
+
+# Crear indice para IPS
+PUT mis_ips
+{
+  "mappings": {
+    "properties": {
+      "nombre": { "type": "keyword" },
+      "ip": { "type": "ip" }
+    }
+  }
+}
+
+PUT mis_ips/_doc/1
+{
+  "nombre": "mi.servidor",
+  "ip": "192.168.1.1"
+}
+
+GET mis_ips
+
+DELETE mis_ips
+
+GET mis_ips/_search
+{
+  "query": {
+    "term": {
+      "ip": "192.168.0.0/16"
+    }
+  }
+}
+
+
+
+# Guardar logs de unos weblogics
+PUT eventos_weblogics
+{
+  "mappings": {
+    "properties": {
+      "description": { "type": "text" },
+      "tipo": { "type": "long" },
+      "fecha": { "type": "date" },
+      "ip": { "type": "ip" }
+    }
+  }
+}
+
+# Administración de Elastic:
+# Que operaciones podiamos hacer sobre un INDICE
+#     BORRARLO
+#     CREARLO
+#     MODIFICARLO
+#     CONGELARLO  <- No modificacion pero SI CONSULTA
+#     CERRAR      <- NO MODIFICACION NI CONSULTA pero lo conservo
+
+# eventos_weblogics_2020_enero
+# eventos_weblogics_2020_febrero
+#...
+# eventos_weblogics_2020_diciembre
+# eventos_weblogics_2021_enero
+# Elasticsearch es que permite hace busquedas utilizando caracteres COMODIN
+# Dame todos los evcentos de eventos_weblogics*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
