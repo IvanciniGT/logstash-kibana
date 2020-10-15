@@ -39,7 +39,10 @@ services:
       - node.data=false 
       - node.ingest=false 
       - node.remote_cluster_client=false  # cluster.remote.connect: false 
-          
+      
+      - ELASTIC_PASSWORD=password 
+      - xpack.security.enabled=true          
+      - xpack.license.self_generated.type=trial 
           
 
   maestro2:
@@ -60,6 +63,10 @@ services:
       - node.ingest=false 
       - node.remote_cluster_client=false  # cluster.remote.connect: false 
           
+      - ELASTIC_PASSWORD=password 
+      - xpack.security.enabled=true          
+      - xpack.license.self_generated.type=trial 
+          
           
   data1:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
@@ -77,6 +84,10 @@ services:
       - node.data=true 
       - node.ingest=false 
       - node.remote_cluster_client=false  # cluster.remote.connect: false 
+      - ELASTIC_PASSWORD=password 
+      - xpack.security.enabled=true          
+      - xpack.license.self_generated.type=trial 
+          
 
   data2:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
@@ -94,12 +105,18 @@ services:
       - node.data=true 
       - node.ingest=false 
       - node.remote_cluster_client=false  # cluster.remote.connect: false 
+      - ELASTIC_PASSWORD=password 
+      - xpack.security.enabled=true          
+      - xpack.license.self_generated.type=trial 
+          
           
   ingesta1:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
     container_name: ingesta1
     volumes:
       - /home/ubuntu/environment/datos/nodo7:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9200
     environment:
       - node.name=ingesta1
       - cluster.name=MiCluster
@@ -111,6 +128,10 @@ services:
       - node.data=false 
       - node.ingest=true 
       - node.remote_cluster_client=false  # cluster.remote.connect: false 
+      - ELASTIC_PASSWORD=password 
+      - xpack.security.enabled=true          
+      - xpack.license.self_generated.type=trial 
+          
           
           
   ingesta2:
@@ -118,6 +139,8 @@ services:
     container_name: ingesta2
     volumes:
       - /home/ubuntu/environment/datos/nodo8:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9200
     environment:
       - node.name=ingesta2
       - cluster.name=MiCluster
@@ -129,6 +152,10 @@ services:
       - node.data=false 
       - node.ingest=true 
       - node.remote_cluster_client=false  # cluster.remote.connect: false 
+      - ELASTIC_PASSWORD=password 
+      - xpack.security.enabled=true          
+      - xpack.license.self_generated.type=trial 
+          
           
           
   coordinador1:
@@ -147,6 +174,10 @@ services:
       - node.data=false 
       - node.ingest=false 
       - node.remote_cluster_client=false  # cluster.remote.connect: false 
+      - ELASTIC_PASSWORD=password 
+      - xpack.security.enabled=true          
+      - xpack.license.self_generated.type=trial 
+          
           
       
 
@@ -168,3 +199,5 @@ services:
       ELASTICSEARCH_HOSTS: "http://coordinador1:9200"
       SERVER_NAME: "kibana"
       SERVER_HOST: "kibana"
+      ELASTICSEARCH_USERNAME: "elastic"
+      ELASTICSEARCH_PASSWORD: "password"      
